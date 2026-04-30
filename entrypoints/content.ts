@@ -46,6 +46,11 @@ export default defineContentScript({
           tips("", "");
         } else if (req.msg === "firework") {
           handleFirework();
+        } else if (req.msg === "openCurrentConfig") {
+          req.env === "pro" && pro("openCurrentConfig", currentUrl);
+          req.env === "dev" && dev("openCurrentConfig", currentUrl);
+        } else if (req.msg === "generateId") {
+          console.log("generateId");
         }
       } catch (error) {
         console.error("Extension context error:", error);
@@ -73,6 +78,9 @@ export default defineContentScript({
         case "getPdId":
           getProductInfo(currentUrl);
           break;
+        case "openCurrentConfig":
+          openCurrentConfig(currentUrl);
+          break;
       }
     }
 
@@ -95,6 +103,9 @@ export default defineContentScript({
             break;
           case "getPdId":
             getProductInfo(currentUrl);
+            break;
+          case "openCurrentConfig":
+            openCurrentConfig(currentUrl);
             break;
         }
       } else {
@@ -194,6 +205,20 @@ export default defineContentScript({
           ticks: 80
         });
       }, 600);
+    }
+
+    function openCurrentConfig(currentUrl: string) {
+      const cUrl = new URL(currentUrl).pathname;
+      const adminUrl = import.meta.env.VITE_SHOPIFY_ADMIN_URL;
+
+      if (cUrl.indexOf("/collection") > -1) {
+        window.open(`${adminUrl}/collections`, "_blank");
+      } else if (cUrl.indexOf("/blogs/news") > -1) {
+        console.log(cUrl);
+        // window.open(`${adminUrl}/content/articles`, "_blank");
+      } else {
+        window.open(`${adminUrl}/themes`, "_blank");
+      }
     }
   },
 });
