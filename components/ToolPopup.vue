@@ -21,13 +21,13 @@
 	<el-button @click="handleButtonClick('current_page')" color="#626aef" class="copy-current-page" type="primary">复制当前链接</el-button>
 	<el-button @click="handleButtonClick('url_qrcode')" color="#626aef" class="generate-url-qrcode" type="primary">生成URL & QRCode</el-button>
 	<el-button @click="handleButtonClick('get_pd_id')" color="#626aef" class="get-pd-id" type="primary">获取产品ID</el-button>
-	<el-button @click="handleButtonClick('generate_id')" color="#626aef" class="generate-id" type="primary">生成自定义ID</el-button>
+  <el-button @click="handleButtonClick('generate_id')" color="#626aef" class="generate-id" type="primary">生成自定义ID</el-button>
 	<el-button @click="handleButtonClick('open_home')" color="#626aef" class="open-home" type="primary">打开首页</el-button>
-	<el-button @click="handleButtonClick('open_env')" color="#626aef" class="open-env" type="primary">打开首页配置</el-button>
-	<el-button @click="handleButtonClick('open_current_config')" color="#626aef" class="open-current-config" type="primary">打开当前页配置</el-button>
-	<el-button @click="handleButtonClick('open_back_file')" color="#626aef" class="open-back-file" type="primary">打开后台文件</el-button>
-	<el-button @click="handleButtonClick('open_back_page')" color="#626aef" class="open-back-page" type="primary">打开后台页面</el-button>
-	<el-button @click="handleButtonClick('open_back_product')" color="#626aef" class="open-back-product" type="primary">打开后台产品</el-button>
+	<el-button @click="handleButtonClick('open_env')" color="#626aef" class="open-env" type="primary">首页配置</el-button>
+	<el-button @click="handleButtonClick('open_current_config')" color="#626aef" class="open-current-config" type="primary">当前页配置</el-button>
+	<el-button @click="handleButtonClick('open_back_file')" color="#626aef" class="open-back-file" type="primary">后台文件</el-button>
+	<el-button @click="handleButtonClick('open_back_page')" color="#626aef" class="open-back-page" type="primary">后台页面</el-button>
+	<el-button @click="handleButtonClick('open_back_product')" color="#626aef" class="open-back-product" type="primary">后台产品</el-button>
 </template>
 
 <script lang="ts" setup>
@@ -58,7 +58,7 @@ const handleButtonClick = async (data: string) => {
 			case "generate_id":
 				browser.runtime.sendMessage({ msg: "generateId", env: currentEnv.value });
 				break;
-				
+
 			case "open_current_config":
 				browser.runtime.sendMessage({ msg: "openCurrentConfig", env: currentEnv.value });
 				break;
@@ -164,5 +164,24 @@ const handleButtonClick = async (data: string) => {
 .open-env {
 	width: 100%;
 	margin: 4px 0;
+}
+
+.generate-id,
+.open-current-config {
+	position: relative;
+
+	&::after {
+		content: "new";
+		position: absolute;
+		top: -7px;
+		right: -6px;
+		background-color: red;
+		color: #fff;
+		padding: 2px 4px;
+		line-height: 1;
+		font-size: 12px;
+		border-radius: 100px;
+		border: 1px solid #fff;
+	}
 }
 </style>

@@ -50,7 +50,8 @@ export default defineContentScript({
           req.env === "pro" && pro("openCurrentConfig", currentUrl);
           req.env === "dev" && dev("openCurrentConfig", currentUrl);
         } else if (req.msg === "generateId") {
-          console.log("generateId");
+          const randomId = 'id_' + Date.now().toString(36) + Math.random().toString(36).substr(2);;
+          tips(`ID: ${randomId}`, "");
         }
       } catch (error) {
         console.error("Extension context error:", error);
@@ -79,7 +80,7 @@ export default defineContentScript({
           getProductInfo(currentUrl);
           break;
         case "openCurrentConfig":
-          openCurrentConfig(currentUrl);
+          openCurrentConfig(currentUrl, 'pro');
           break;
       }
     }
@@ -105,7 +106,7 @@ export default defineContentScript({
             getProductInfo(currentUrl);
             break;
           case "openCurrentConfig":
-            openCurrentConfig(currentUrl);
+            openCurrentConfig(currentUrl, 'dev');
             break;
         }
       } else {
@@ -206,16 +207,31 @@ export default defineContentScript({
         });
       }, 600);
     }
-
-    function openCurrentConfig(currentUrl: string) {
+    
+    async function openCurrentConfig(currentUrl: string, env: string) {
       const cUrl = new URL(currentUrl).pathname;
       const adminUrl = import.meta.env.VITE_SHOPIFY_ADMIN_URL;
-
+      const themeId = env == 'pro' ? import.meta.env.VITE_PRO_THEME_ID : import.meta.env.VITE_DEV_THEME_ID;
+      
       if (cUrl.indexOf("/collection") > -1) {
         window.open(`${adminUrl}/collections`, "_blank");
       } else if (cUrl.indexOf("/blogs/news") > -1) {
-        console.log(cUrl);
-        // window.open(`${adminUrl}/content/articles`, "_blank");
+        window.open(`${adminUrl}/content/articles`, "_blank");
+      } else if (cUrl.indexOf("/product") > -1) {
+        fetch(`${currentUrl.split("?")[0]}.json`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.product.id) {
+              window.open(`${adminUrl}/products/${data.product.id}`, "_blank");
+            } else {
+              tips("出错了~😱", "");
+            }
+          })
+          .catch((error) => {
+            tips("出错了~😱", "");
+          });
+      } else if (cUrl.indexOf("/pages") > -1) {
+        window.open(`${import.meta.env.VITE_SHOPIFY_ADMIN_URL}/themes/${themeId}/editor?previewPath=${cUrl}`, "_blank");
       } else {
         window.open(`${adminUrl}/themes`, "_blank");
       }
