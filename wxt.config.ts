@@ -9,7 +9,7 @@ export default defineConfig({
 
   manifest: {
     name: "Quick Access",
-    version: "1.1.8",
+    version: "1.1.9",
     description: "Quick access to your shopify store",
     permissions: ["activeTab", "tabs", "storage", "clipboardWrite"],
   },
